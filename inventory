@@ -1,0 +1,8 @@
+[jenkins]
+ec2-user@ec2-3-126-100-145.eu-central-1.compute.amazonaws.com
+
+[jenkins-slave]
+ec2-user@ec2-3-78-103-251.eu-central-1.compute.amazonaws.com
+
+[nexus]
+ec2-user@ec2-3-77-191-47.eu-central-1.compute.amazonaws.com

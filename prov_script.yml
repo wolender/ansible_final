@@ -1,0 +1,73 @@
+---
+- hosts: jenkins-slave
+  become: true
+  tasks:
+  - name: update system
+    yum:
+      name: '*'
+      state: latest
+    when: ansible_distribution == "Amazon"
+
+  - name: install java 17
+    yum:
+      name: java-17-amazon-corretto-devel.x86_64
+      state: present
+
+  - name: install docker
+    yum:
+      name: docker
+      state: present
+
+  - name: install git
+    yum:
+      name: git
+      state: present
+
+- hosts: jenkins
+  become: true
+  tasks:
+    - name: update system
+      yum:
+        name: '*'
+        state: latest
+
+    - name: install java 17
+      yum:
+        name: java-17-amazon-corretto-devel.x86_64
+        state: present
+
+    - name: install docker
+      yum:
+        name: docker
+        state: present
+
+    - name: install jenkins
+      yum:
+        name: jenkins
+        state: present
+
+    - name: install maven
+      yum: 
+        name: maven
+        state: latest
+
+    - name: start jenkins
+      service:
+        name: jenkins
+        state: started
+
+- hosts: nexus
+  become: true
+  tasks:
+    - name: update system
+      yum:
+        name: '*'
+        state: latest
+
+    - name: install java
+      yum:
+        name: java-17-amazon-corretto-devel.x86_64
+        state: present
+
+    - name: start nexus
+      shell: sudo -u nexus /opt/nexus/nexus-3.51.0-01/bin/nexus start
