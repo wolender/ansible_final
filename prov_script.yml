@@ -26,11 +26,6 @@
 - hosts: jenkins
   become: true
   tasks:
-    - name: Add private key to authorized keys
-      authorized_key:
-        user: ec2-user
-        key: "{{ lookup('file', 'ansible.pub') }}"
-        state: present
     - name: update system
       yum:
         name: '*'
@@ -45,6 +40,12 @@
       yum:
         name: docker
         state: present
+
+    - name: add jenkins repo
+      shell: |
+        wget -O /etc/yum.repos.d/jenkins.repo https://pkg.jenkins.io/redhat-stable/jenkins.repo
+        rpm --import https://pkg.jenkins.io/redhat-stable/jenkins.io-2023.key
+        yum upgrade
 
     - name: install jenkins
       yum:
