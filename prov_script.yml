@@ -26,6 +26,11 @@
 - hosts: jenkins
   become: true
   tasks:
+    - name: Add private key to authorized keys
+      authorized_key:
+        user: ec2-user
+        key: "{{ lookup('file', 'ansible.pub') }}"
+        state: present
     - name: update system
       yum:
         name: '*'

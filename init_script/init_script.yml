@@ -1,0 +1,12 @@
+---
+- hosts: jenkins-node
+  become: true
+  vars:
+    private_key_path: "{{ private_key }}"
+    ansible_ssh_private_key_file: "{{ private_key }}"
+  tasks:
+  - name: Add private key to authorized keys
+    authorized_key:
+      user: ec2-user
+      key: "{{ lookup('file', 'ansible.pub') }}"
+      state: present

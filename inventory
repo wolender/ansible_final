@@ -1,5 +1,6 @@
 [jenkins]
 ec2-user@ec2-3-126-100-145.eu-central-1.compute.amazonaws.com
+ec2-user@ec2-35-157-48-64.eu-central-1.compute.amazonaws.com
 
 [jenkins-slave]
 ec2-user@ec2-3-78-103-251.eu-central-1.compute.amazonaws.com
