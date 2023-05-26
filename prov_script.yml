@@ -25,6 +25,14 @@
 
 - hosts: jenkins
   become: true
+  vars:
+    nexus_vault_password: !vault |
+          $ANSIBLE_VAULT;1.1;AES256
+          62333664366139656461396538646137343066386138333762313430333964623862646165323637
+          6266393462343764346337313334666366373331356339620a626338373631396135383861393936
+          39393532313264646562333031333164396530353039626537356631636433353938626466386164
+          3234633861356165380a396235313530366230666265326334303666653762626630386133633636
+          3865
   tasks:
     - name: update system
       yum:
@@ -62,6 +70,19 @@
         name: jenkins
         state: started
 
+    - name: Add password line to .bashrc
+      become_user: ec2-user
+      lineinfile:
+        path: ~/.bashrc
+        line: "export NEXUS_PASSWORD={{ nexus_vault_password }}"
+        insertafter: EOF
+        
+
+    - name: Copy files
+      copy:
+        src: settings.xml
+        dest: /var/lib/jenkins
+
 - hosts: nexus
   become: true
   tasks:
@@ -74,6 +95,17 @@
       yum:
         name: java-17-amazon-corretto-devel.x86_64
         state: present
+
+    - name: Download Nexus tar file
+      get_url:
+        url: "https://download.sonatype.com/nexus/3/nexus-3.54.1-01-unix.tar.gz"
+        dest: "/tmp/nexus-3.54.1-01-unix.tar.gz"
+
+    - name: Extract Nexus tar file
+      unarchive:
+        src: "/tmp/nexus-3.54.1-01-unix.tar.gz"
+        dest: "/opt/"
+        remote_src: yes
 
     - name: start nexus
       shell: sudo -u nexus /opt/nexus/nexus-3.51.0-01/bin/nexus start
